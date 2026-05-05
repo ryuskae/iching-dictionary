@@ -71,7 +71,7 @@ const KO_NAMES = {
 };
 
 // ── iching.json 로드 및 변환 ─────────────────────────────────────────────
-fetch('data/iching.json')
+fetch('iching.json')
   .then(res => {
     if (!res.ok) throw new Error('iching.json을 불러오지 못했습니다.');
     return res.json();
