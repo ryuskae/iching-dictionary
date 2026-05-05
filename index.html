@@ -347,6 +347,25 @@ body {
 .lrail  { overflow: hidden; }
 .lprev  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+
+/* ── 효/괘 그림 라인 (gradient 방식 - 안정적 렌더링) ── */
+.tr, .hr {
+  border-radius: 1px;
+}
+.tr.yang, .hr.yang {
+  background: var(--ink);
+  border-radius: 1px;
+}
+.tr.yin, .hr.yin {
+  background: linear-gradient(
+    to right,
+    var(--ink) 0% 43%,
+    transparent 43% 57%,
+    var(--ink) 57% 100%
+  );
+}
+/* 기존 .bar 관련 규칙은 브랜드마크용으로만 남김 */
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -393,14 +412,14 @@ function x(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").repla
 function tg(lines, sz, gap, th) {
   const vis = [...lines].reverse();
   return '<div class="tg" style="gap:'+gap+'px">' +
-    vis.map(v=>'<div class="tr" style="width:'+sz+'px;height:'+th+'px">'+(v?'<div class="bar s"></div>':'<div class="bar h"></div><div class="bar h"></div>')+'</div>').join('') + '</div>';
+    vis.map(v=>'<div class="tr '+(v?'yang':'yin')+'" style="width:'+sz+'px;height:'+th+'px"></div>').join('') + '</div>';
 }
 
 function hg(up, lo, sz, th, gap, act) {
   const stack = [...lo, ...up];
   const vis = stack.map((v,i)=>({v,i})).reverse();
   return '<div class="hg" style="gap:'+gap+'px">' +
-    vis.map(({v,i})=>'<div class="hr'+(i===act?' act':'')+'" style="width:'+sz+'px;height:'+th+'px">'+(v?'<div class="bar s"></div>':'<div class="bar h"></div><div class="bar h"></div>')+'</div>').join('') + '</div>';
+    vis.map(({v,i})=>'<div class="hr '+(v?'yang':'yin')+(i===act?' act':'')+'" style="width:'+sz+'px;height:'+th+'px"></div>').join('') + '</div>';
 }
 
 function passage(obj) {
