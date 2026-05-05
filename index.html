@@ -351,6 +351,7 @@ body {
 /* ── 효/괘 그림 라인 (gradient 방식 - 안정적 렌더링) ── */
 .tr, .hr {
   border-radius: 1px;
+  position: relative;
 }
 .tr.yang, .hr.yang {
   background: var(--ink);
@@ -415,15 +416,18 @@ function tg(lines, sz, gap, th) {
   return '<div class="tg" style="gap:'+gap+'px">' +
     vis.map(v => {
       if (v) {
+        // 양효: 단일 solid 바
         return '<div class="tr" style="width:'+sz+'px;height:'+th+'px;background:#3a3028;border-radius:1px"></div>';
       } else {
-        return '<div class="tr" style="width:'+sz+'px;height:'+th+'px;display:flex;justify-content:space-between">'
-          +'<div style="width:'+half+'px;height:100%;background:#3a3028;border-radius:1px"></div>'
-          +'<div style="width:'+half+'px;height:100%;background:#3a3028;border-radius:1px"></div>'
+        // 음효: absolute 포지셔닝으로 좌·우 반을 배치, 중간은 빈 공간
+        return '<div class="tr" style="width:'+sz+'px;height:'+th+'px;position:relative">'
+          +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:1px 0 0 1px"></div>'
+          +'<div style="position:absolute;right:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:0 1px 1px 0"></div>'
           +'</div>';
       }
     }).join('') + '</div>';
 }
+
 
 function hg(up, lo, sz, th, gap, act) {
   const stack = [...lo, ...up];
@@ -433,15 +437,18 @@ function hg(up, lo, sz, th, gap, act) {
     vis.map(({v,i}) => {
       const actCls = i===act ? ' act' : '';
       if (v) {
+        // 양효: 단일 solid 바
         return '<div class="hr'+actCls+'" style="width:'+sz+'px;height:'+th+'px;background:#3a3028;border-radius:1px"></div>';
       } else {
-        return '<div class="hr'+actCls+'" style="width:'+sz+'px;height:'+th+'px;display:flex;justify-content:space-between">'
-          +'<div style="width:'+half+'px;height:100%;background:#3a3028;border-radius:1px"></div>'
-          +'<div style="width:'+half+'px;height:100%;background:#3a3028;border-radius:1px"></div>'
+        // 음효: absolute 포지셔닝으로 좌·우 반 배치
+        return '<div class="hr'+actCls+'" style="width:'+sz+'px;height:'+th+'px;position:relative">'
+          +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:1px 0 0 1px"></div>'
+          +'<div style="position:absolute;right:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:0 1px 1px 0"></div>'
           +'</div>';
       }
     }).join('') + '</div>';
 }
+
 
 function passage(obj) {
   return '<div class="passage">'
