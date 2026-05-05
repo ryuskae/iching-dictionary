@@ -297,6 +297,39 @@ body {
   .dhan { font-size: 36px; }
 }
 
+
+/* ── 뷰포트 반응형 크기 (폰트·여백 모두 높이에 비례) ── */
+.than  { font-size: clamp(13px, 1.9dvh, 22px); }
+.tname { font-size: clamp(9px,  1.25dvh, 15px); margin-top: clamp(1px, 0.3dvh, 4px); }
+.ten   { font-size: clamp(9px,  1.1dvh,  13px); }
+
+.dnum  { font-size: clamp(11px, 1.4dvh, 16px); }
+.dhan  { font-size: clamp(36px, 7dvh,   96px); margin: clamp(3px,0.7dvh,10px) 0 clamp(4px,0.8dvh,12px); }
+.dko   { font-size: clamp(14px, 2.2dvh, 24px); }
+.den   { font-size: clamp(14px, 2.2dvh, 24px); }
+.tpair { font-size: clamp(11px, 1.5dvh, 16px); }
+
+.phan  { font-size: clamp(15px, 2.6dvh, 30px); line-height: 1.7; padding-left: clamp(10px,1.2dvh,18px); }
+.pen2  { font-size: clamp(13px, 2.2dvh, 24px); }
+.pko   { font-size: clamp(12px, 1.9dvh, 20px); }
+
+.seyebrow { font-size: clamp(10px, 1.3dvh, 14px); margin-bottom: clamp(10px, 1.5dvh, 20px); }
+.lnum  { font-size: clamp(12px, 1.6dvh, 16px); }
+.llbl  { font-size: clamp(9px,  1.1dvh, 12px); }
+.lprev { font-size: clamp(11px, 1.5dvh, 15px); }
+.li    { padding: clamp(5px, 0.9dvh, 12px) 8px; gap: clamp(8px, 1.2dvh, 16px); }
+
+.dhead { padding: clamp(14px,2.5dvh,44px) clamp(18px,3dvh,52px) clamp(12px,2dvh,34px); }
+.dbody { padding: clamp(14px,2.5dvh,44px) clamp(18px,3dvh,52px) clamp(16px,2.5dvh,50px); gap: clamp(16px,2.8dvh,44px); }
+.passage { gap: clamp(8px, 1.2dvh, 16px); }
+.lrail { padding: clamp(12px,1.8dvh,22px) clamp(14px,2dvh,26px); }
+.lhead { margin-bottom: clamp(8px,1.2dvh,16px); }
+
+.picker { padding: clamp(12px,1.8dvh,22px); }
+.psub   { font-size: clamp(11px,1.4dvh,14px); margin-top: clamp(2px,0.4dvh,5px); margin-bottom: clamp(8px,1.4dvh,18px); }
+.pgrid  { gap: clamp(5px, 0.8dvh, 10px); flex: 1; grid-template-rows: repeat(2, 1fr); }
+.tcard  { height: 100%; justify-content: center; padding: clamp(6px,1dvh,14px) 5px; gap: clamp(4px,0.7dvh,10px); }
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -372,7 +405,7 @@ function picker(which) {
     +'<div class="psub">'+x(sub)+'</div>'
     +'<div class="pgrid">'
     + TR.map(t=>'<button class="tcard'+(cur===t.id?' on':'')+'" onclick="'+fn+'('+t.id+')">'
-        + tg(t.l, 38, 4, 4)
+        + tg(t.l, gsz().c, gsz().cg, gsz().ct)
         + '<div class="than">'+t.h+'</div>'
         + '<div class="tname">'+t.n+'</div>'
         + '<div class="ten">'+t.e+'</div>'
@@ -425,7 +458,7 @@ function detail() {
         +'<div class="dnames"><span class="dko">'+x(hex.name.ko)+'</span><span class="dot"> · </span><span class="den">'+x(hex.name.en)+'</span></div>'
       +'</div>'
       +'<div class="dright">'
-        + hg(up.l, lo.l, 72, 6, 7, act)
+        + hg(up.l, lo.l, gsz().hx, gsz().ht, gsz().hg2, act)
         +'<div class="tpair">'
           +'<div><span class="plbl">'+x(t.pu)+'</span>'+x(up.h)+'<span class="pen"> '+x(up.e)+'</span></div>'
           +'<div><span class="plbl">'+x(t.pd)+'</span>'+x(lo.h)+'<span class="pen"> '+x(lo.e)+'</span></div>'
@@ -509,6 +542,24 @@ function app() {
     +'</div>'
     +'<div class="ftr"><span>Wilhelm / Baynes · 한글 번역 · 周易 原文</span><span class="m">A reading is a mirror, not a map.</span></div>'
     +(S.search ? searchPanel() : '');
+}
+
+
+function gsz() {
+  var w = window.innerWidth, h = window.innerHeight;
+  if (w < 768) {
+    return {c:34, ct:3, cg:3, hx:64, ht:5, hg2:6};
+  }
+  // 사이드바: (전체 - 헤더50 - 푸터45 - 바디패딩40 - 구분선44) / 2 - 피커헤더55
+  var perPicker = (h - 190) / 2 - 55;
+  var perRow    = Math.max(40, (perPicker - 8) / 2);
+  var c  = Math.min(70, Math.max(30, Math.round(perRow * 0.45)));
+  var ct = Math.max(3, Math.round(c * 0.1));
+  var cg = Math.max(3, Math.round(c * 0.11));
+  var hx = Math.min(120, Math.max(56, Math.round(h * 0.1)));
+  var ht = Math.max(5, Math.round(hx * 0.075));
+  var hg2= Math.max(5, Math.round(hx * 0.09));
+  return {c:c, ct:ct, cg:cg, hx:hx, ht:ht, hg2:hg2};
 }
 
 function paint() {
