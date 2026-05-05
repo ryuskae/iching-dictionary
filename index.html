@@ -88,7 +88,7 @@ body {
 .pey { font-family: var(--fU); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
 .psub { font-family: var(--fS); font-size: 13px; color: var(--ink-soft); margin-top: 4px; margin-bottom: 16px; }
 .pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.tcard { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 6px 10px; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; cursor: pointer; transition: all .15s; font-family: inherit; }
+.tcard { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: clamp(6px,1dvh,14px) clamp(10px,1.2dvh,18px); background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; cursor: pointer; transition: all .15s; font-family: inherit; }
 .tcard:hover { border-color: var(--gold); transform: translateY(-1px); }
 .tcard.on { background: var(--sel); border-color: var(--gold); box-shadow: 0 0 0 2px oklch(0.66 0.09 75 / .18); }
 .than { font-family: var(--fS); font-size: 16px; font-weight: 600; color: var(--ink); }
@@ -225,7 +225,7 @@ body {
   .picker { flex: 1; display: flex; flex-direction: column; padding: 12px 12px 10px; }
   .psub { font-size: 11px; margin-top: 2px; margin-bottom: 10px; }
   .pgrid { gap: 5px; }
-  .tcard { padding: 6px 3px 5px; gap: 4px; }
+  .tcard { padding: clamp(6px,1dvh,14px) clamp(10px,1.2dvh,18px); gap: 4px; }
   .than { font-size: 13px; }
   .tname { font-size: 9px; margin-top: 1px; }
   .ten { font-size: 9px; }
@@ -328,7 +328,7 @@ body {
 .picker { padding: clamp(12px,1.8dvh,22px); }
 .psub   { font-size: clamp(11px,1.4dvh,14px); margin-top: clamp(2px,0.4dvh,5px); margin-bottom: clamp(8px,1.4dvh,18px); }
 .pgrid  { gap: clamp(5px, 0.8dvh, 10px); flex: 1; grid-template-rows: repeat(2, 1fr); }
-.tcard  { height: 100%; justify-content: center; padding: clamp(6px,1dvh,14px) 5px; gap: clamp(4px,0.7dvh,10px); }
+.tcard  { height: 100%; justify-content: center; padding: clamp(6px,1dvh,14px) clamp(10px,1.2dvh,18px); gap: clamp(4px,0.7dvh,10px); }
 
 
 /* ── overflow 방어 ── */
@@ -625,7 +625,7 @@ function gsz() {
   var gapPx = Math.min(10, Math.max(5, Math.round(h * 0.008)));
   // card 가로 내부 여백 (좌우 합산 약 10px)
   var colW = (sideW - padH * 2 - 3 * gapPx) / 4;
-  var maxFromW = Math.floor(colW - 12);   // 카드 내부 패딩 빼기
+  var maxFromW = Math.floor(colW - 24);   // 카드 내부 패딩 빼기
 
   // ── 카드 높이 기반 최대 글리프 크기 ──
   // (전체 높이 - 헤더 - 푸터 - body패딩 - 구분선) / 2 - 피커 헤더
