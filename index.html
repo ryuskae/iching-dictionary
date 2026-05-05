@@ -340,7 +340,7 @@ body {
 .main   { overflow-x: hidden; }
 .detail { overflow-x: hidden; }
 .dhead  { overflow: hidden; }
-.dright { overflow: hidden; flex-shrink: 0; max-width: 45%; }
+.dright { flex-shrink: 0; max-width: 45%; }
 .dbody  { overflow-x: hidden; }
 .passage { overflow-wrap: break-word; word-break: break-word; }
 .phan, .pen2, .pko { overflow-wrap: break-word; }
@@ -411,42 +411,45 @@ let S = {uid:1, lid:1, lang:"ko", line:-1, search:false, q:""};
 function x(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
 function tg(lines, sz, gap, th) {
-  const vis = [...lines].reverse();
-  const half = Math.floor(sz * 0.43);
-  return '<div class="tg" style="gap:'+gap+'px">' +
-    vis.map(v => {
-      if (v) {
-        // 양효: 단일 solid 바
-        return '<div class="tr" style="width:'+sz+'px;height:'+th+'px;background:#3a3028;border-radius:1px"></div>';
-      } else {
-        // 음효: absolute 포지셔닝으로 좌·우 반을 배치, 중간은 빈 공간
-        return '<div class="tr" style="width:'+sz+'px;height:'+th+'px;position:relative">'
-          +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:1px 0 0 1px"></div>'
-          +'<div style="position:absolute;right:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:0 1px 1px 0"></div>'
-          +'</div>';
-      }
-    }).join('') + '</div>';
+  var vis = lines.slice().reverse();
+  var half = Math.floor(sz * 0.43);
+  var H = 3*th + 2*gap;
+  var ink = '#3a3028';
+  var s = '';
+  vis.forEach(function(v, idx) {
+    var y = idx * (th + gap);
+    if (v) {
+      s += '<rect x="0" y="'+y+'" width="'+sz+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+    } else {
+      s += '<rect x="0" y="'+y+'" width="'+half+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+      s += '<rect x="'+(sz-half)+'" y="'+y+'" width="'+half+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+    }
+  });
+  return '<svg width="'+sz+'" height="'+H+'" viewBox="0 0 '+sz+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="display:block">'+s+'</svg>';
 }
 
 
 function hg(up, lo, sz, th, gap, act) {
-  const stack = [...lo, ...up];
-  const vis = stack.map((v,i)=>({v,i})).reverse();
-  const half = Math.floor(sz * 0.43);
-  return '<div class="hg" style="gap:'+gap+'px">' +
-    vis.map(({v,i}) => {
-      const actCls = i===act ? ' act' : '';
-      if (v) {
-        // 양효: 단일 solid 바
-        return '<div class="hr'+actCls+'" style="width:'+sz+'px;height:'+th+'px;background:#3a3028;border-radius:1px"></div>';
-      } else {
-        // 음효: absolute 포지셔닝으로 좌·우 반 배치
-        return '<div class="hr'+actCls+'" style="width:'+sz+'px;height:'+th+'px;position:relative">'
-          +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:1px 0 0 1px"></div>'
-          +'<div style="position:absolute;right:0;top:0;bottom:0;width:'+half+'px;background:#3a3028;border-radius:0 1px 1px 0"></div>'
-          +'</div>';
-      }
-    }).join('') + '</div>';
+  var stack = lo.concat(up);
+  var vis = stack.map(function(v,i){return {v:v,i:i};}).reverse();
+  var half = Math.floor(sz * 0.43);
+  var H = 6*th + 5*gap;
+  var ink = '#3a3028';
+  var gold = '#ede0c4';
+  var s = '';
+  vis.forEach(function(item, idx) {
+    var y = idx * (th + gap);
+    if (item.i === act) {
+      s += '<rect x="-10" y="'+(y-2)+'" width="'+(sz+20)+'" height="'+(th+4)+'" fill="'+gold+'" rx="2"/>';
+    }
+    if (item.v) {
+      s += '<rect x="0" y="'+y+'" width="'+sz+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+    } else {
+      s += '<rect x="0" y="'+y+'" width="'+half+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+      s += '<rect x="'+(sz-half)+'" y="'+y+'" width="'+half+'" height="'+th+'" fill="'+ink+'" rx="1"/>';
+    }
+  });
+  return '<svg width="'+sz+'" height="'+H+'" viewBox="-10 0 '+(sz+20)+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">'+s+'</svg>';
 }
 
 
