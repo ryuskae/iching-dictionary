@@ -330,6 +330,23 @@ body {
 .pgrid  { gap: clamp(5px, 0.8dvh, 10px); flex: 1; grid-template-rows: repeat(2, 1fr); }
 .tcard  { height: 100%; justify-content: center; padding: clamp(6px,1dvh,14px) 5px; gap: clamp(4px,0.7dvh,10px); }
 
+
+/* ── overflow 방어 ── */
+.pgrid  { overflow: hidden; min-width: 0; }
+.tcard  { min-width: 0; overflow: hidden; }
+.picker { overflow: hidden; }
+
+/* 괘효사 패널 */
+.main   { overflow-x: hidden; }
+.detail { overflow-x: hidden; }
+.dhead  { overflow: hidden; }
+.dright { overflow: hidden; flex-shrink: 0; max-width: 45%; }
+.dbody  { overflow-x: hidden; }
+.passage { overflow-wrap: break-word; word-break: break-word; }
+.phan, .pen2, .pko { overflow-wrap: break-word; }
+.lrail  { overflow: hidden; }
+.lprev  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -547,18 +564,34 @@ function app() {
 
 function gsz() {
   var w = window.innerWidth, h = window.innerHeight;
-  if (w < 768) {
-    return {c:34, ct:3, cg:3, hx:64, ht:5, hg2:6};
-  }
-  // 사이드바: (전체 - 헤더50 - 푸터45 - 바디패딩40 - 구분선44) / 2 - 피커헤더55
-  var perPicker = (h - 190) / 2 - 55;
-  var perRow    = Math.max(40, (perPicker - 8) / 2);
-  var c  = Math.min(70, Math.max(30, Math.round(perRow * 0.45)));
+  if (w < 768) return {c:32, ct:3, cg:3, hx:60, ht:5, hg2:6};
+
+  // ── 카드 너비 기반 최대 글리프 크기 ──
+  // CSS breakpoint에 따른 사이드바 너비 추정
+  var sideW = w >= 1200 ? 360 : 300;
+  // picker padding (clamp 12-22px; dvh 기준 중간값)
+  var padH = Math.min(22, Math.max(12, Math.round(h * 0.018)));
+  // grid gap (clamp 5-10px)
+  var gapPx = Math.min(10, Math.max(5, Math.round(h * 0.008)));
+  // card 가로 내부 여백 (좌우 합산 약 10px)
+  var colW = (sideW - padH * 2 - 3 * gapPx) / 4;
+  var maxFromW = Math.floor(colW - 12);   // 카드 내부 패딩 빼기
+
+  // ── 카드 높이 기반 최대 글리프 크기 ──
+  // (전체 높이 - 헤더 - 푸터 - body패딩 - 구분선) / 2 - 피커 헤더
+  var perPicker = (h - 195) / 2 - 58;
+  var perRow    = Math.max(36, (perPicker - gapPx) / 2);
+  var maxFromH  = Math.min(64, Math.max(28, Math.round(perRow * 0.44)));
+
+  // 너비·높이 중 작은 값 사용 (overflow 방지)
+  var c  = Math.min(maxFromW, maxFromH);
   var ct = Math.max(3, Math.round(c * 0.1));
   var cg = Math.max(3, Math.round(c * 0.11));
-  var hx = Math.min(120, Math.max(56, Math.round(h * 0.1)));
-  var ht = Math.max(5, Math.round(hx * 0.075));
-  var hg2= Math.max(5, Math.round(hx * 0.09));
+
+  // ── 육효 글리프 (detail 헤더 우측) ──
+  var hx  = Math.min(100, Math.max(54, Math.round(h * 0.09)));
+  var ht  = Math.max(5, Math.round(hx * 0.075));
+  var hg2 = Math.max(5, Math.round(hx * 0.09));
   return {c:c, ct:ct, cg:cg, hx:hx, ht:ht, hg2:hg2};
 }
 
