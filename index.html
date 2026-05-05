@@ -150,7 +150,7 @@ body {
 .lrail { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 24px; }
 .lhead { display: flex; align-items: baseline; gap: 0; margin-bottom: 14px; }
 .ley { font-family: var(--fU); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
-.lhint { font-family: var(--fE); font-style: italic; font-size: 12px; color: var(--ink-faint); font-weight: 400; letter-spacing: 0; text-transform: none; }
+.lhint { font-family: var(--fE); font-style: italic; font-size: 12px; color: var(--ink); font-weight: 400; letter-spacing: 0; text-transform: none; }
 .lhead2 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .backbtn { font-family: var(--fU); font-size: 11px; letter-spacing: .1em; color: var(--gold); background: none; border: 1px solid var(--gold-soft); border-radius: 999px; padding: 5px 14px; cursor: pointer; transition: all .15s; flex-shrink: 0; }
 .backbtn:hover { background: var(--gold-soft); color: var(--ink); }
@@ -401,7 +401,7 @@ for (const [k,n] of Object.entries(LOOKUP)) {
 const NUMS = ["初","二","三","四","五","上"];
 
 const T = {
-  ko:{ul:"상괘 · UPPER",us:"위에 놓일 괘를 선택",ll:"하괘 · LOWER",ls:"아래에 놓일 괘를 선택",sw:"↑↓ 위아래 바꾸기",rs:"초기화",jl:"괘사 · THE JUDGMENT",el:"효 · LINES",eh:"— 효를 클릭하면 효사를 봅니다",se:"검색",sp:"괘명, 괘사, 효사 검색…",nr:"검색 결과 없음",st:"상괘와 하괘를 선택하세요",ss:"Select an upper and lower trigram to reveal the hexagram.",pu:"상",pd:"하",ln:i=>NUMS[i]+"효",le:i=>"효사 · "+NUMS[i]+"효",lc:i=>(i+1)+"효",jt:"괘사",cl:"닫기",bk:"← 효 목록으로"},
+  ko:{ul:"상괘 · UPPER",us:"위에 놓일 괘를 선택",ll:"하괘 · LOWER",ls:"아래에 놓일 괘를 선택",sw:"↑↓ 위아래 바꾸기",rs:"초기화",jl:"괘사 · THE JUDGMENT",el:"효 · LINES",eh:"— 효를 클릭하면 효사를 볼 수 있습니다",se:"검색",sp:"괘명, 괘사, 효사 검색…",nr:"검색 결과 없음",st:"상괘와 하괘를 선택하세요",ss:"Select an upper and lower trigram to reveal the hexagram.",pu:"상",pd:"하",ln:i=>NUMS[i]+"효",le:i=>"효사 · "+NUMS[i]+"효",lc:i=>(i+1)+"효",jt:"괘사",cl:"닫기",bk:"← 효 목록으로"},
   en:{ul:"UPPER TRIGRAM",us:"Select the upper trigram",ll:"LOWER TRIGRAM",ls:"Select the lower trigram",sw:"↑↓ Swap",rs:"Reset",jl:"THE JUDGMENT",el:"LINES",eh:"— Click a line to read its text",se:"Search",sp:"Search hexagrams, judgments, lines…",nr:"No results found",st:"Select upper and lower trigrams",ss:"Choose a trigram pair to reveal the hexagram.",pu:"U",pd:"L",ln:i=>"Line "+(i+1),le:i=>"LINE "+(i+1),lc:i=>"Line "+(i+1),jt:"Judgment",cl:"Close",bk:"← Back to lines"},
   zh:{ul:"上卦",us:"請選擇上卦",ll:"下卦",ls:"請選擇下卦",sw:"↑↓ 互換",rs:"重置",jl:"卦辭",el:"爻辭",eh:"— 點擊爻位查看爻辭",se:"搜索",sp:"搜索卦名、卦辭、爻辭…",nr:"無搜索結果",st:"請選擇上卦與下卦",ss:"選擇上下卦以顯示卦象。",pu:"上",pd:"下",ln:i=>NUMS[i]+"爻",le:i=>NUMS[i]+"爻",lc:i=>(i+1)+"爻",jt:"卦辭",cl:"關閉",bk:"← 返回爻列表"},
 };
