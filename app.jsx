@@ -277,13 +277,6 @@ function DetailPanel({ upper, lower }) {
           <PassageBlock {...hex.judgment} />
         </section>
 
-        {hex.image && (
-          <section className="image-section">
-            <div className="section-eyebrow">상전 · THE IMAGE</div>
-            <PassageBlock {...hex.image} />
-          </section>
-        )}
-
         <section className="lines-section">
           <LineRail hex={hex} activeLine={activeLine} onPick={setActiveLine} />
           {activeLine >= 0 && hex.lines[activeLine] && (
