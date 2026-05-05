@@ -202,21 +202,93 @@ body {
 /* ── scrollbar ── */
 ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--paper-edge); border-radius: 10px; }
 
-/* ── responsive ── */
-@media(max-width: 1100px) {
+
+/* ── responsive / viewport-fit ── */
+
+/* 큰 화면: 넉넉한 레이아웃 유지 */
+@media (min-width: 1200px) {
+  .dhead { padding: 36px 48px 28px; }
+  .dbody { padding: 32px 48px 40px; }
+}
+
+/* 태블릿 landscape (768px~1199px 너비 AND 최대 900px 높이) — 스크롤 없이 화면에 딱 맞춤 */
+@media (min-width: 768px) and (max-height: 900px) {
+  #root { padding: 0 20px; }
+  .hdr { padding: 10px 0 9px; }
+  .bmark { padding: 5px 7px; gap: 3px; }
+  .btitle { font-size: 18px; }
+  .nbtn { padding: 6px 12px; font-size: 11px; }
+  .lbtn { padding: 5px 11px; }
+
+  .body { gap: 20px; padding: 12px 0 8px; grid-template-columns: 300px 1fr; }
+
+  /* 피커 소형화 */
+  .picker { padding: 12px 12px 10px; }
+  .psub { font-size: 11px; margin-top: 2px; margin-bottom: 10px; }
+  .pgrid { gap: 5px; }
+  .tcard { padding: 6px 3px 5px; gap: 4px; }
+  .than { font-size: 13px; }
+  .tname { font-size: 9px; margin-top: 1px; }
+  .ten { font-size: 9px; }
+  /* 팔괘 글리프 축소 */
+  .tcard .tg { transform: scale(0.72); transform-origin: top center; margin-bottom: -8px; }
+  .divider { padding: 1px 4px; }
+  .tbtn { padding: 5px 4px; font-size: 10px; }
+
+  /* 괘 상세 소형화 */
+  .dhead { padding: 16px 24px 14px; gap: 20px; }
+  .dnum { font-size: 11px; }
+  .dhan { font-size: 40px; margin: 3px 0 5px; letter-spacing: 3px; }
+  .dko, .den { font-size: 14px; }
+  .dright { gap: 10px; }
+  .tpair { font-size: 11px; line-height: 1.6; }
+  .dbody { padding: 16px 24px 20px; gap: 18px; }
+  .seyebrow { font-size: 10px; margin-bottom: 12px; }
+
+  /* 본문 텍스트 소형화 */
+  .passage { gap: 9px; }
+  .phan { font-size: 17px; line-height: 1.65; padding-left: 12px; }
+  .pen2 { font-size: 15px; }
+  .pko { font-size: 13px; }
+
+  /* 효 목록 소형화 */
+  .lrail { padding: 14px 16px; }
+  .lhead { margin-bottom: 10px; }
+  .ley { font-size: 10px; }
+  .lhint { font-size: 11px; }
+  .llist { gap: 0; }
+  .li { padding: 7px 5px; gap: 10px; grid-template-columns: 26px 26px 44px 1fr; }
+  .lnum { font-size: 12px; }
+  .llbl { font-size: 10px; }
+  .lprev { font-size: 12px; }
+  .lhead2 { margin-bottom: 12px; }
+  .backbtn { font-size: 10px; padding: 4px 11px; }
+
+  .ftr { padding: 8px 0 10px; font-size: 11px; }
+}
+
+/* 1100px 이하 (태블릿 portrait 포함) */
+@media (max-width: 1100px) and (min-height: 901px) {
   #root { padding: 0 20px; }
   .body { grid-template-columns: 320px 1fr; gap: 28px; }
-  .dhead { padding: 32px; grid-template-columns: 1fr; }
+  .dhead { padding: 28px 32px; grid-template-columns: 1fr; }
   .dright { align-items: flex-start; }
   .tpair { text-align: left; }
-  .dbody { padding: 28px 32px 36px; }
+  .dbody { padding: 24px 32px 32px; }
   .dhan { font-size: 48px; }
 }
-@media(max-width: 780px) {
-  html, body, #root { overflow: auto; height: auto; }
-  #root { padding: 0 16px; }
-  .body { grid-template-columns: 1fr; height: auto; overflow: visible; }
+
+/* 모바일 / portrait */
+@media (max-width: 767px) {
+  html, body { overflow: auto; height: auto; }
+  #root { overflow: auto; height: auto; padding: 0 16px; }
+  .body { grid-template-columns: 1fr; height: auto; overflow: visible; padding: 12px 0; }
   .sidebar, .main { height: auto; overflow: visible; }
+  .dhead { grid-template-columns: 1fr; padding: 20px; }
+  .dright { align-items: flex-start; }
+  .tpair { text-align: left; }
+  .dbody { padding: 20px; }
+  .dhan { font-size: 36px; }
 }
 
 </style>
@@ -445,7 +517,8 @@ function paint() {
 }
 
 // Global handlers
-function su(id){ S.uid=id; S.line=-1; paint(); }
+function su(id){ S.uid=id; S.line=-1; paint();
+window.addEventListener("resize", function(){ paint(); }); }
 function sl(id){ S.lid=id; S.line=-1; paint(); }
 function sw(){ const u=S.uid,l=S.lid; S.uid=l; S.lid=u; S.line=-1; paint(); }
 function rs(){ S.uid=null; S.lid=null; S.line=-1; paint(); }
