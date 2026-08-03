@@ -67,6 +67,11 @@ button { color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 14px;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
 .panel {
   border: 1px solid var(--line);
@@ -78,6 +83,21 @@ button { color: inherit; }
 .eyebrow { color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .profile-panel h2 { margin: 5px 0 4px; font-family: var(--serif); font-size: 19px; }
 .helper { margin: 0 0 16px; color: var(--muted); font-size: 12px; }
+.people-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.people-heading h2 { margin-bottom: 0; }
+.mini-button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; background: #fff; color: var(--jade); font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.mini-button:hover { border-color: var(--jade-2); background: var(--jade-soft); }
+.people-list { display: grid; gap: 6px; max-height: 190px; overflow-y: auto; margin-top: 12px; padding-right: 2px; }
+.person { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; background: #fff; text-align: left; cursor: pointer; }
+.person:hover { border-color: #b9cdc4; }
+.person.active { border-color: #9ebeb3; background: var(--jade-soft); color: var(--jade); }
+.person strong, .person small { display: block; }
+.person strong { font-family: var(--serif); font-size: 13px; }
+.person small { margin-top: 1px; color: var(--muted); font-size: 10px; }
+.person-arrow { color: var(--muted); font-size: 22px; line-height: 1; }
+.people-empty { margin: 12px 0 0; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; color: var(--muted); font-size: 11px; text-align: center; }
+.profile-divider { height: 1px; margin: 18px 0; background: var(--line); }
+.optional { margin-left: 5px; color: var(--gold); font-size: 10px; font-weight: 500; }
 .field { display: grid; gap: 7px; margin-top: 12px; }
 .field label { color: var(--muted); font-size: 12px; font-weight: 650; }
 .field input, .period-input {
@@ -102,6 +122,8 @@ button { color: inherit; }
 .primary:hover { background: var(--jade-2); transform: translateY(-1px); }
 .secondary { border: 1px solid var(--line); background: var(--panel); color: var(--muted); white-space: nowrap; }
 .secondary:hover { border-color: var(--jade-2); color: var(--jade); }
+.danger-button { width: 100%; margin-top: 8px; border: 0; background: transparent; color: #9b4b43; font-size: 11px; cursor: pointer; }
+.danger-button:hover { text-decoration: underline; }
 .form-error { min-height: 18px; margin: 8px 0 0; color: #a33e35; font-size: 12px; }
 
 .birth-summary { display: none; margin-top: 16px; padding-top: 15px; border-top: 1px dashed var(--line); }
@@ -111,6 +133,7 @@ button { color: inherit; }
 .pillar-mini .label { color: var(--muted); }
 .pillar-mini .ganji { font-family: var(--serif); font-weight: 700; }
 .pillar-mini .hex { color: var(--jade); }
+.unknown-time { margin-top: 8px; border-radius: 8px; padding: 7px 8px; background: var(--panel-soft); color: var(--muted); font-size: 10px; text-align: center; }
 
 .tabs-panel { padding: 8px; }
 .tabs { display: grid; gap: 6px; }
@@ -140,6 +163,12 @@ button { color: inherit; }
 .empty-state p { margin: 0; color: var(--muted); }
 
 .period-panel { display: grid; grid-template-columns: minmax(210px, 320px) minmax(0, 1fr); gap: 20px; padding: 22px; }
+.lifetime-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px; background: linear-gradient(135deg, rgba(255, 253, 248, .94), rgba(220, 232, 226, .9)); }
+.lifetime-intro h2 { margin: 5px 0 6px; font-family: var(--serif); font-size: clamp(22px, 3vw, 32px); }
+.lifetime-intro p { margin: 0; color: var(--muted); font-size: 13px; }
+.lifetime-formula { flex: 0 0 auto; display: grid; gap: 2px; min-width: 190px; border: 1px solid #b9cdc4; border-radius: 16px; padding: 16px 18px; background: rgba(255, 255, 255, .65); text-align: center; }
+.lifetime-formula strong { color: var(--jade); font-family: var(--serif); font-size: 17px; }
+.lifetime-formula span { color: var(--muted); font-size: 11px; }
 .period-control { align-self: center; }
 .period-title { margin: 6px 0 14px; font-family: var(--serif); font-size: 22px; }
 .period-actions { display: flex; align-items: flex-end; gap: 8px; }
@@ -175,7 +204,8 @@ button { color: inherit; }
 .hex-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
 .hex-card { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 15px; background: #fff; overflow: hidden; }
 .hex-card::after { content: attr(data-unicode); position: absolute; right: -4px; bottom: -20px; color: rgba(49, 95, 85, .055); font-family: var(--serif); font-size: 90px; }
-.card-pillar { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; }
+.card-pillar { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 3px 8px; color: var(--muted); font-size: 11px; }
+.card-pillar span:first-child { color: var(--ink); font-weight: 650; }
 .card-body { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; margin-top: 12px; }
 .hex-glyph { flex: 0 0 58px; width: 58px; }
 .card-name { min-width: 0; }
@@ -197,8 +227,8 @@ button { color: inherit; }
   .app { padding: 14px; }
   .privacy { display: none; }
   .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; }
-  .tabs { grid-template-columns: repeat(4, 1fr); }
+  .sidebar { position: static; max-height: none; overflow: visible; padding-right: 0; }
+  .tabs { grid-template-columns: repeat(5, 1fr); }
   .tab { grid-template-columns: 1fr; gap: 0; padding: 8px 4px; text-align: center; }
   .tab small { display: none; }
   .period-panel { grid-template-columns: 1fr; }
@@ -209,7 +239,9 @@ button { color: inherit; }
   .topbar { margin-bottom: 10px; }
   .brand-mark { width: 42px; height: 42px; }
   .brand p { display: none; }
-  .profile-panel, .period-panel, .counts-panel, .results-panel { border-radius: 16px; padding: 16px; }
+  .profile-panel, .period-panel, .lifetime-intro, .counts-panel, .results-panel { border-radius: 16px; padding: 16px; }
+  .lifetime-intro { align-items: stretch; flex-direction: column; gap: 14px; }
+  .lifetime-formula { min-width: 0; }
   .basis-card { grid-template-columns: 64px 1fr; gap: 12px; padding: 15px; }
   .basis-unicode { display: none; }
   .basis-glyph { width: 64px; }
