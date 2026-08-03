@@ -107,13 +107,16 @@
     };
   }
 
-  function makeBirthPillars(pillars) {
-    return [
+  function makeBirthPillars(pillars, includeTime = true) {
+    const result = [
       { key: "year", label: "연주", ganji: pillars.year, hex: hexForGanji(pillars.year) },
       { key: "month", label: "월주", ganji: pillars.month, hex: hexForGanji(pillars.month) },
-      { key: "day", label: "일주", ganji: pillars.day, hex: hexForGanji(pillars.day) },
-      { key: "time", label: "시주", ganji: pillars.time, hex: hexForGanji(pillars.time) }
+      { key: "day", label: "일주", ganji: pillars.day, hex: hexForGanji(pillars.day) }
     ];
+    if (includeTime && pillars.time) {
+      result.push({ key: "time", label: "시주", ganji: pillars.time, hex: hexForGanji(pillars.time) });
+    }
+    return result;
   }
 
   function mixFortunes(periodHex, birthPillars) {
@@ -126,6 +129,29 @@
       hex: hexFromBits(periodHex.upper.key + pillar.hex.lower.key)
     }));
     return { upperFromBirth, upperFromPeriod };
+  }
+
+  // 참조 이미지의 A-B' 방식입니다. 각 주의 상괘를 다른 모든 주의
+  // 하괘와 결합합니다. 4주면 12개, 시주가 없으면 3주로 6개가 됩니다.
+  function lifetimeFortunes(birthPillars) {
+    const results = [];
+    const count = birthPillars.length;
+    for (let i = 0; i < count; i += 1) {
+      for (let offset = 1; offset < count; offset += 1) {
+        const j = (i + offset) % count;
+        const upperSource = birthPillars[i];
+        const lowerSource = birthPillars[j];
+        results.push({
+          key: `${upperSource.key}-${lowerSource.key}`,
+          label: `${upperSource.label} 상괘 + ${lowerSource.label} 하괘`,
+          ganji: `${upperSource.ganji} · ${lowerSource.ganji}`,
+          upperSource,
+          lowerSource,
+          hex: hexFromBits(upperSource.hex.upper.key + lowerSource.hex.lower.key)
+        });
+      }
+    }
+    return results;
   }
 
   function countHexagrams(groups) {
@@ -149,6 +175,7 @@
     fourPillars,
     makeBirthPillars,
     mixFortunes,
+    lifetimeFortunes,
     countHexagrams
   };
 });
