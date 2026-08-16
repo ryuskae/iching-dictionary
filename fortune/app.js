@@ -22,6 +22,7 @@
     profiles: loaded.profiles,
     activeProfileId: loaded.activeProfileId,
     editorProfileId: loaded.activeProfileId,
+    formOpen: loaded.profiles.length === 0,
     period: {
       year: String(now.getFullYear()),
       month: today,
@@ -129,32 +130,20 @@
     return rows + (!profile.time ? `<div class="unknown-time">출생 시각 미입력 · 연주·월주·일주만 계산</div>` : "");
   }
 
-  function peopleList() {
+  function profileSelector() {
     if (!state.profiles.length) return `<p class="people-empty">아직 저장된 인물이 없습니다.</p>`;
-    return `<div class="people-list">${state.profiles.map((p) => `<button class="person ${p.id === state.activeProfileId ? "active" : ""}" type="button" data-profile-id="${esc(p.id)}"><span><strong>${esc(p.name)}</strong><small>${esc(p.date)}${p.time ? ` · ${esc(p.time)}` : " · 시간 미상"}</small></span><span class="person-arrow">›</span></button>`).join("")}</div>`;
+    return `<label class="profile-select-label" for="profileSelect">운세를 볼 인물</label><select class="profile-select" id="profileSelect">${state.profiles.map((p) => `<option value="${esc(p.id)}" ${p.id === state.activeProfileId ? "selected" : ""}>${esc(p.name)} · ${esc(p.date)}${p.time ? ` ${esc(p.time)}` : " 시간 미상"}</option>`).join("")}</select>`;
   }
 
   function renderSidebar() {
     const profile = activeProfile();
-    const editing = editorProfile();
     const pillars = birthPillars();
     return `
       <aside class="sidebar">
         <section class="panel profile-panel">
           <div class="people-heading"><div><div class="eyebrow">Saved people</div><h2>저장된 인물</h2></div><button class="mini-button" id="newProfile" type="button">+ 새 인물</button></div>
-          ${peopleList()}
-          <div class="profile-divider"></div>
-          <div class="eyebrow">Birth profile</div>
-          <h2>${editing ? "인물 정보 수정" : "새 사주 저장"}</h2>
-          <p class="helper">이름과 양력 생일을 입력하세요. 출생 시각은 모르면 비워두셔도 됩니다.</p>
-          <form id="profileForm">
-            <div class="field"><label for="profileName">이름</label><input id="profileName" name="profileName" type="text" maxlength="30" autocomplete="off" required value="${esc(editing?.name || "")}" placeholder="예: 석용"></div>
-            <div class="field"><label for="birthDate">양력 생일</label><input id="birthDate" name="birthDate" type="date" min="1900-01-01" max="2100-12-31" required value="${esc(editing?.date || "")}"></div>
-            <div class="field"><label for="birthTime">출생 시각 <span class="optional">선택 사항</span></label><input id="birthTime" name="birthTime" type="time" value="${esc(editing?.time || "")}"></div>
-            <button class="primary" type="submit">${editing ? "이 인물 정보 수정" : "새 인물로 저장"}</button>
-            ${editing ? `<button class="danger-button" id="deleteProfile" type="button">이 인물 삭제</button>` : ""}
-            <p class="form-error" id="formError" role="alert"></p>
-          </form>
+          ${profileSelector()}
+          ${profile ? `<button class="profile-edit-button" id="editProfile" type="button">${esc(profile.name)}님 정보 수정</button>` : ""}
           <div class="birth-summary ${pillars ? "show" : ""}" id="birthSummary">${profileSummary(pillars, profile)}</div>
         </section>
         <section class="panel tabs-panel">
@@ -163,6 +152,28 @@
           </nav>
         </section>
       </aside>`;
+  }
+
+  function renderProfileModal() {
+    if (!state.formOpen) return "";
+    const editing = editorProfile();
+    return `<div class="modal-backdrop" id="profileModal">
+      <section class="profile-modal panel" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+        <div class="modal-heading">
+          <div><div class="eyebrow">Birth profile</div><h2 id="profileModalTitle">${editing ? "인물 정보 수정" : "새 사주 저장"}</h2></div>
+          <button class="modal-close" id="closeProfileModal" type="button" aria-label="닫기">×</button>
+        </div>
+        <p class="helper">이름과 양력 생일을 입력하세요. 출생 시각은 모르면 비워두셔도 됩니다.</p>
+        <form id="profileForm">
+          <div class="field"><label for="profileName">이름</label><input id="profileName" name="profileName" type="text" maxlength="30" autocomplete="off" required value="${esc(editing?.name || "")}" placeholder="예: 석용"></div>
+          <div class="field"><label for="birthDate">양력 생일</label><input id="birthDate" name="birthDate" type="date" min="1900-01-01" max="2100-12-31" required value="${esc(editing?.date || "")}"></div>
+          <div class="field"><label for="birthTime">출생 시각 <span class="optional">선택 사항</span></label><input id="birthTime" name="birthTime" type="time" value="${esc(editing?.time || "")}"></div>
+          <div class="modal-actions"><button class="primary" type="submit">${editing ? "정보 수정" : "새 인물 저장"}</button><button class="secondary" id="cancelProfileEdit" type="button">취소</button></div>
+          ${editing ? `<button class="danger-button" id="deleteProfile" type="button">이 인물 삭제</button>` : ""}
+          <p class="form-error" id="formError" role="alert"></p>
+        </form>
+      </section>
+    </div>`;
   }
 
   function periodInput() {
@@ -253,8 +264,10 @@
 
   function render() {
     const root = document.getElementById("app");
-    root.innerHTML = `<header class="topbar"><div class="brand"><div class="brand-mark">易</div><div><h1>간지괘운</h1><p>干支卦運 · GANJI HEXAGRAM FORTUNE</p></div></div><div class="privacy">절기 기준 사주 · 60갑자 배괘 · 브라우저 로컬 저장</div></header><div class="layout">${renderSidebar()}${renderMain()}</div>`;
+    root.innerHTML = `<header class="topbar"><div class="brand"><div class="brand-mark">易</div><div><h1>간지괘운</h1><p>干支卦運 · GANJI HEXAGRAM FORTUNE</p></div></div><div class="privacy">절기 기준 사주 · 60갑자 배괘 · 브라우저 로컬 저장</div></header><div class="layout">${renderSidebar()}${renderMain()}</div>${renderProfileModal()}`;
+    document.body.classList.toggle("modal-open", state.formOpen);
     bindEvents();
+    if (state.formOpen) document.getElementById("profileName")?.focus();
   }
 
   function showToast(message) {
@@ -283,6 +296,7 @@
       else state.profiles.push(saved);
       state.activeProfileId = id;
       state.editorProfileId = id;
+      state.formOpen = false;
       persistProfiles();
       render();
       showToast(`${name}님의 사주를 저장했습니다.`);
@@ -295,14 +309,27 @@
     if (!state.profiles.some((p) => p.id === id)) return;
     state.activeProfileId = id;
     state.editorProfileId = id;
+    state.formOpen = false;
     persistProfiles();
     render();
   }
 
   function startNewProfile() {
-    state.activeProfileId = null;
     state.editorProfileId = null;
-    persistProfiles();
+    state.formOpen = true;
+    render();
+  }
+
+  function editActiveProfile() {
+    if (!state.activeProfileId) return;
+    state.editorProfileId = state.activeProfileId;
+    state.formOpen = true;
+    render();
+  }
+
+  function closeProfileModal() {
+    state.editorProfileId = state.activeProfileId;
+    state.formOpen = false;
     render();
   }
 
@@ -312,6 +339,7 @@
     state.profiles = state.profiles.filter((p) => p.id !== profile.id);
     state.activeProfileId = state.profiles[0]?.id || null;
     state.editorProfileId = state.activeProfileId;
+    state.formOpen = false;
     persistProfiles();
     render();
     showToast("저장된 인물을 삭제했습니다.");
@@ -333,11 +361,16 @@
   function bindEvents() {
     document.getElementById("profileForm")?.addEventListener("submit", saveProfile);
     document.getElementById("newProfile")?.addEventListener("click", startNewProfile);
+    document.getElementById("editProfile")?.addEventListener("click", editActiveProfile);
+    document.getElementById("profileSelect")?.addEventListener("change", (event) => selectProfile(event.target.value));
+    document.getElementById("closeProfileModal")?.addEventListener("click", closeProfileModal);
+    document.getElementById("cancelProfileEdit")?.addEventListener("click", closeProfileModal);
+    document.getElementById("profileModal")?.addEventListener("click", (event) => { if (event.target === event.currentTarget) closeProfileModal(); });
     document.getElementById("deleteProfile")?.addEventListener("click", deleteProfile);
-    document.querySelectorAll("[data-profile-id]").forEach((button) => button.addEventListener("click", () => selectProfile(button.dataset.profileId)));
     document.querySelectorAll("[data-tab]").forEach((button) => button.addEventListener("click", () => { state.tab = button.dataset.tab; render(); }));
     document.getElementById("periodValue")?.addEventListener("change", (e) => updatePeriod(e.target.value));
     document.getElementById("resetPeriod")?.addEventListener("click", resetPeriod);
+    document.onkeydown = (event) => { if (event.key === "Escape" && state.formOpen) closeProfileModal(); };
   }
 
   try {
