@@ -202,6 +202,8 @@ button { color: inherit; }
 .count-chip strong { display: grid; place-items: center; min-width: 23px; height: 23px; border-radius: 50%; background: var(--jade-soft); color: var(--jade); font-family: var(--sans); font-size: 12px; }
 
 .results-panel { padding: 22px; }
+.results-head { align-items: center; }
+.results-tools { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .formula { margin: 0; color: var(--muted); font-size: 12px; }
 .hex-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
 .hex-card { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 15px; background: #fff; overflow: hidden; }
@@ -215,14 +217,40 @@ button { color: inherit; }
 .card-name span { color: var(--muted); font-family: var(--serif); font-size: 12px; }
 .trigram-pair { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 11px; }
 .trigram-pair span { padding: 3px 7px; border-radius: 7px; background: var(--panel-soft); }
+.results-switch { display: flex; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: #fff; }
+.results-switch button { border: 0; border-radius: 999px; padding: 5px 10px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 700; cursor: pointer; }
+.results-switch button.active { background: var(--jade); color: #fff; }
+.result-pager { display: flex; flex: 0 0 auto; align-items: center; gap: 7px; }
+.result-pager button { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--jade); font-size: 22px; line-height: 1; cursor: pointer; }
+.result-pager button:disabled { opacity: .35; cursor: default; }
+.result-pager span { min-width: 30px; color: var(--muted); font-size: 11px; text-align: center; }
 
 .line-svg { display: block; width: 100%; height: auto; overflow: visible; }
-.footer-note { padding: 6px 8px 18px; color: var(--muted); font-size: 11px; text-align: center; }
+.footer-note { padding: 10px 4px 0; color: var(--muted); font-size: 10px; text-align: center; }
 .toast { position: fixed; left: 50%; bottom: 26px; z-index: 20; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; border-radius: 999px; padding: 10px 16px; background: #202b27; color: #fff; font-size: 12px; transition: .2s ease; }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
-@media (max-width: 1120px) {
-  .hex-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 821px) and (max-width: 1120px) {
+  .hex-card { padding: 9px; }
+  .card-pillar { font-size: 9px; }
+  .card-body { gap: 7px; margin-top: 7px; }
+  .hex-glyph { flex-basis: 44px; width: 44px; }
+  .card-name strong { font-size: 14px; }
+  .card-name span { font-size: 10px; }
+  .trigram-pair { gap: 3px; margin-top: 7px; font-size: 9px; }
+  .trigram-pair span { padding: 2px 4px; }
+}
+
+@media (min-width: 821px) {
+  html, body { height: 100%; overflow: hidden; }
+  .app { display: flex; flex-direction: column; height: 100dvh; }
+  .topbar { flex: 0 0 auto; }
+  .layout { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+  .sidebar { align-self: start; }
+  .main { min-height: 0; grid-template-rows: auto auto minmax(0, 1fr); }
+  .results-panel { display: flex; min-height: 0; flex-direction: column; overflow: hidden; }
+  .hex-grid { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+  .hex-card { height: 100%; }
 }
 
 @media (max-width: 820px) {
@@ -234,6 +262,8 @@ button { color: inherit; }
   .tab { grid-template-columns: 1fr; gap: 0; padding: 8px 4px; text-align: center; }
   .tab small { display: none; }
   .period-panel { grid-template-columns: 1fr; }
+  .hex-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .results-tools { align-items: flex-end; flex-direction: column; gap: 7px; }
 }
 
 @media (min-width: 821px) and (max-height: 720px) {
@@ -248,6 +278,28 @@ button { color: inherit; }
   .tabs-panel { padding: 6px; }
   .tab { padding: 4px 8px; }
   .tab small { display: none; }
+  .main { gap: 8px; }
+  .period-panel, .lifetime-intro { padding: 12px 14px; }
+  .period-panel { gap: 12px; }
+  .period-title { margin: 2px 0 8px; font-size: 19px; }
+  .field input, .period-input { min-height: 36px; padding-top: 5px; padding-bottom: 5px; }
+  .basis-card { min-height: 100px; padding: 10px 14px; }
+  .basis-glyph { width: 58px; }
+  .basis-unicode { font-size: 50px; }
+  .basis-ganji { font-size: 26px; }
+  .lifetime-intro h2 { margin: 2px 0; font-size: 22px; }
+  .lifetime-formula { padding: 9px 12px; }
+  .counts-panel { padding: 9px 14px; }
+  .counts-panel .section-head { margin-bottom: 6px; }
+  .count-chip { padding: 4px 8px; font-size: 11px; }
+  .count-chip strong { min-width: 19px; height: 19px; font-size: 10px; }
+  .results-panel { padding: 12px 14px; }
+  .results-panel .section-head { margin-bottom: 6px; }
+  .hex-grid { gap: 8px; margin-top: 6px; }
+  .hex-card { padding: 10px; }
+  .card-body { margin-top: 7px; }
+  .trigram-pair { margin-top: 7px; }
+  .footer-note { padding-top: 5px; }
 }
 
 @media (max-width: 560px) {
