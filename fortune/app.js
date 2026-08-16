@@ -23,6 +23,8 @@
     activeProfileId: loaded.activeProfileId,
     editorProfileId: loaded.activeProfileId,
     formOpen: loaded.profiles.length === 0,
+    lifetimePage: 0,
+    periodGroup: "birth",
     period: {
       year: String(now.getFullYear()),
       month: today,
@@ -217,22 +219,26 @@
     return `<section class="panel counts-panel"><div class="section-head"><h2>괘 출현 횟수</h2><p>${description} 총 ${total}개 조합입니다.</p></div><div class="counts">${counts.map(({ hex, count }) => `<span class="count-chip">${hex.name}<strong>${count}</strong></span>`).join("")}</div></section>`;
   }
 
-  function resultsGroup(title, formula, items) {
-    return `<section class="panel results-panel"><div class="section-head"><div><div class="eyebrow">${items.length} combinations</div><h2>${title}</h2></div><p class="formula">${formula}</p></div><div class="hex-grid">${items.map(hexCard).join("")}</div></section>`;
+  function resultsGroup(title, formula, items, controls = "", total = items.length, note = "") {
+    return `<section class="panel results-panel"><div class="section-head results-head"><div><div class="eyebrow">${total} combinations</div><h2>${title}</h2></div><div class="results-tools"><p class="formula">${formula}</p>${controls}</div></div><div class="hex-grid">${items.map(hexCard).join("")}</div>${note ? `<div class="footer-note">${note}</div>` : ""}</section>`;
   }
 
   function renderLifetime(profile, pillars) {
     const combinations = C.lifetimeFortunes(pillars);
     const counts = C.countHexagrams([combinations]);
     const pillarText = pillars.map((p) => p.label).join("·");
+    const pageSize = 4;
+    const pageCount = Math.ceil(combinations.length / pageSize);
+    state.lifetimePage = Math.min(state.lifetimePage, pageCount - 1);
+    const pageItems = combinations.slice(state.lifetimePage * pageSize, (state.lifetimePage + 1) * pageSize);
+    const pager = `<div class="result-pager" aria-label="평생 운 괘 페이지"><button type="button" id="previousResults" ${state.lifetimePage === 0 ? "disabled" : ""} aria-label="이전 괘">‹</button><span>${state.lifetimePage + 1} / ${pageCount}</span><button type="button" id="nextResults" ${state.lifetimePage === pageCount - 1 ? "disabled" : ""} aria-label="다음 괘">›</button></div>`;
     return `<main class="main">
       <section class="panel lifetime-intro">
         <div><div class="eyebrow">Lifetime fortune</div><h2>${esc(profile.name)}님의 평생 운</h2><p>${pillarText}의 상괘와 서로 다른 주의 하괘를 교차해 계산합니다.</p></div>
         <div class="lifetime-formula"><strong>${pillars.length}주 × 나머지 ${pillars.length - 1}주</strong><span>${combinations.length}개 고유 조합</span></div>
       </section>
       ${countsPanel(counts, combinations.length, "평생 운에서 나온 괘를 합산했습니다.")}
-      ${resultsGroup("평생 운 괘 조합", "각 주의 상괘 + 나머지 주의 하괘", combinations)}
-      <div class="footer-note">참조 이미지의 A-B′ 조합법을 적용했습니다. 출생 시각이 없으면 시주를 제외합니다.</div>
+      ${resultsGroup("평생 운 괘 조합", "각 주의 상괘 + 나머지 주의 하괘", pageItems, pager, combinations.length, "참조 이미지의 A-B′ 조합법을 적용했습니다. 출생 시각이 없으면 시주를 제외합니다.")}
     </main>`;
   }
 
@@ -241,15 +247,20 @@
     const mixed = C.mixFortunes(info.hex, pillars);
     const counts = C.countHexagrams([mixed.upperFromBirth, mixed.upperFromPeriod]);
     const total = pillars.length * 2;
+    const birthGroup = state.periodGroup === "birth";
+    const items = birthGroup ? mixed.upperFromBirth : mixed.upperFromPeriod;
+    const title = birthGroup ? "내 상괘 + 운의 하괘" : "운의 상괘 + 내 하괘";
+    const formula = birthGroup
+      ? `사주 각 괘의 상괘 · ${C.toKoreanGanji(info.ganji)}${info.tab.unit} 괘의 하괘`
+      : `${C.toKoreanGanji(info.ganji)}${info.tab.unit} 괘의 상괘 · 사주 각 괘의 하괘`;
+    const switcher = `<div class="results-switch" role="group" aria-label="괘 조합식"><button type="button" data-result-group="birth" class="${birthGroup ? "active" : ""}">내 상괘</button><button type="button" data-result-group="period" class="${birthGroup ? "" : "active"}">운의 상괘</button></div>`;
     return `<main class="main">
       <section class="panel period-panel">
         <div class="period-control"><div class="eyebrow">Period selector</div><h2 class="period-title">${info.tab.label}</h2><div class="period-actions">${periodInput()}<button class="secondary" id="resetPeriod" type="button">오늘</button></div></div>
         ${basisCard(info)}
       </section>
       ${countsPanel(counts, total, "두 조합식에서 나온 괘를 합산했습니다.")}
-      ${resultsGroup("내 상괘 + 운의 하괘", `사주 각 괘의 상괘 · ${C.toKoreanGanji(info.ganji)}${info.tab.unit} 괘의 하괘`, mixed.upperFromBirth)}
-      ${resultsGroup("운의 상괘 + 내 하괘", `${C.toKoreanGanji(info.ganji)}${info.tab.unit} 괘의 상괘 · 사주 각 괘의 하괘`, mixed.upperFromPeriod)}
-      <div class="footer-note">간지는 절기 기준으로 계산합니다. 월 운세의 간지는 선택한 기준일의 절입 전후에 따라 달라질 수 있습니다.</div>
+      ${resultsGroup(title, formula, items, switcher, total, "간지는 절기 기준으로 계산합니다. 월 운세의 간지는 선택한 기준일의 절입 전후에 따라 달라질 수 있습니다.")}
     </main>`;
   }
 
@@ -310,6 +321,7 @@
     state.activeProfileId = id;
     state.editorProfileId = id;
     state.formOpen = false;
+    state.lifetimePage = 0;
     persistProfiles();
     render();
   }
@@ -358,6 +370,11 @@
     try { render(); } catch (_) { showToast("선택한 날짜를 계산할 수 없습니다."); }
   }
 
+  function changeLifetimePage(delta) {
+    state.lifetimePage = Math.max(0, state.lifetimePage + delta);
+    render();
+  }
+
   function bindEvents() {
     document.getElementById("profileForm")?.addEventListener("submit", saveProfile);
     document.getElementById("newProfile")?.addEventListener("click", startNewProfile);
@@ -367,7 +384,10 @@
     document.getElementById("cancelProfileEdit")?.addEventListener("click", closeProfileModal);
     document.getElementById("profileModal")?.addEventListener("click", (event) => { if (event.target === event.currentTarget) closeProfileModal(); });
     document.getElementById("deleteProfile")?.addEventListener("click", deleteProfile);
-    document.querySelectorAll("[data-tab]").forEach((button) => button.addEventListener("click", () => { state.tab = button.dataset.tab; render(); }));
+    document.querySelectorAll("[data-tab]").forEach((button) => button.addEventListener("click", () => { state.tab = button.dataset.tab; state.lifetimePage = 0; render(); }));
+    document.querySelectorAll("[data-result-group]").forEach((button) => button.addEventListener("click", () => { state.periodGroup = button.dataset.resultGroup; render(); }));
+    document.getElementById("previousResults")?.addEventListener("click", () => changeLifetimePage(-1));
+    document.getElementById("nextResults")?.addEventListener("click", () => changeLifetimePage(1));
     document.getElementById("periodValue")?.addEventListener("change", (e) => updatePeriod(e.target.value));
     document.getElementById("resetPeriod")?.addEventListener("click", resetPeriod);
     document.onkeydown = (event) => { if (event.key === "Escape" && state.formOpen) closeProfileModal(); };
