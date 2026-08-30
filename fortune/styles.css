@@ -206,8 +206,7 @@ button { color: inherit; }
 .results-tools { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .formula { margin: 0; color: var(--muted); font-size: 12px; }
 .hex-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
-.hex-card { position: relative; min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 15px; background: #fff; overflow: hidden; }
-.hex-card::after { content: attr(data-unicode); position: absolute; right: -4px; bottom: -20px; color: rgba(49, 95, 85, .055); font-family: var(--serif); font-size: 90px; }
+.hex-card { position: relative; display: flex; min-width: 0; min-height: 0; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; padding: 15px; background: #fff; overflow: hidden; }
 .card-pillar { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 3px 8px; color: var(--muted); font-size: 11px; }
 .card-pillar span:first-child { color: var(--ink); font-weight: 650; }
 .card-body { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; margin-top: 12px; }
@@ -217,6 +216,7 @@ button { color: inherit; }
 .card-name span { color: var(--muted); font-family: var(--serif); font-size: 12px; }
 .trigram-pair { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 11px; }
 .trigram-pair span { padding: 3px 7px; border-radius: 7px; background: var(--panel-soft); }
+.hex-meaning { position: relative; z-index: 1; margin: 12px 0 0; border-top: 1px dashed var(--line); padding-top: 10px; color: #5f6059; font-family: var(--serif); font-size: clamp(8.5px, .72vw, 10.5px); line-height: 1.48; overflow-wrap: anywhere; }
 .results-switch { display: flex; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: #fff; }
 .results-switch button { border: 0; border-radius: 999px; padding: 5px 10px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 700; cursor: pointer; }
 .results-switch button.active { background: var(--jade); color: #fff; }
@@ -239,6 +239,7 @@ button { color: inherit; }
   .card-name span { font-size: 10px; }
   .trigram-pair { gap: 3px; margin-top: 7px; font-size: 9px; }
   .trigram-pair span { padding: 2px 4px; }
+  .hex-meaning { margin-top: 7px; padding-top: 6px; font-size: 8.5px; line-height: 1.38; }
 }
 
 @media (min-width: 821px) {
@@ -299,6 +300,7 @@ button { color: inherit; }
   .hex-card { padding: 10px; }
   .card-body { margin-top: 7px; }
   .trigram-pair { margin-top: 7px; }
+  .hex-meaning { margin-top: 7px; padding-top: 6px; font-size: 8px; line-height: 1.28; }
   .footer-note { padding-top: 5px; }
 }
 
@@ -315,6 +317,7 @@ button { color: inherit; }
   .basis-glyph { width: 64px; }
   .period-actions { align-items: stretch; flex-direction: column; }
   .hex-grid { grid-template-columns: 1fr; }
+  .hex-meaning { font-size: 12px; line-height: 1.6; }
   .section-head { align-items: flex-start; flex-direction: column; gap: 2px; }
 }
 
