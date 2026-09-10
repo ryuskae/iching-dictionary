@@ -96,12 +96,23 @@
     return hexFromBits(bits);
   }
 
+  // 한국천문연구원 음양력 기준: 연간지는 음력 설날에, 월간지는 음력 월이 바뀔 때 변합니다.
+  // 음력 1월이 인월, 11월이 자월이며 월간은 오호둔(갑·기년 병인월 …)으로 뽑습니다.
+  function lunarMonthGanji(yearGanji, lunarMonth) {
+    const firstStem = (STEMS.indexOf(yearGanji.charAt(0)) % 5) * 2 + 2;
+    return STEMS[(firstStem + lunarMonth - 1) % 10] + BRANCHES[(lunarMonth + 1) % 12];
+  }
+
   function fourPillars(SolarCtor, year, month, day, hour, minute) {
     const solar = SolarCtor.fromYmdHms(Number(year), Number(month), Number(day), Number(hour), Number(minute), 0);
-    const eight = solar.getLunar().getEightChar();
+    const lunar = solar.getLunar();
+    const eight = lunar.getEightChar();
+    const yearGanji = lunar.getYearInGanZhi();
+    // 윤달은 getMonth()가 음수로 주며, 앞 달의 간지를 그대로 씁니다.
+    const lunarMonth = Math.abs(lunar.getMonth());
     return {
-      year: eight.getYear(),
-      month: eight.getMonth(),
+      year: yearGanji,
+      month: lunarMonthGanji(yearGanji, lunarMonth),
       day: eight.getDay(),
       time: eight.getTime()
     };

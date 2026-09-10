@@ -8,7 +8,7 @@
   const TABS = {
     lifetime: { symbol: "命", label: "평생 운", small: "사주 각 주의 교차 조합" },
     year: { symbol: "年", label: "연 운세", small: "선택한 해", unit: "년", ganjiKey: "year" },
-    month: { symbol: "月", label: "월 운세", small: "선택한 날짜의 절기월", unit: "월", ganjiKey: "month" },
+    month: { symbol: "月", label: "월 운세", small: "선택한 날짜의 음력월", unit: "월", ganjiKey: "month" },
     day: { symbol: "日", label: "일 운세", small: "선택한 날짜", unit: "일", ganjiKey: "day" },
     time: { symbol: "時", label: "시 운세", small: "선택한 시각", unit: "시", ganjiKey: "time" }
   };
@@ -329,7 +329,7 @@
         ${basisCard(info)}
       </section>
       ${countsPanel(counts, total, "두 조합식에서 나온 괘를 합산했습니다.")}
-      ${resultsGroup(title, formula, items, switcher, total, "간지는 절기 기준으로 계산합니다. 월 운세의 간지는 선택한 기준일의 절입 전후에 따라 달라질 수 있습니다.")}
+      ${resultsGroup(title, formula, items, switcher, total, "간지는 한국천문연구원 음양력 기준으로 계산합니다. 연간지는 음력 설날에, 월간지는 음력 월이 바뀔 때 달라집니다.")}
     </main>`;
   }
 
@@ -344,7 +344,7 @@
 
   function render() {
     const root = document.getElementById("app");
-    root.innerHTML = `<header class="topbar"><div class="brand"><div class="brand-mark">易</div><div><h1>간지괘운</h1><p>干支卦運 · GANJI HEXAGRAM FORTUNE</p></div></div><div class="privacy">절기 기준 사주 · 60갑자 배괘 · 브라우저 로컬 저장</div></header><div class="layout">${renderSidebar()}${renderMain()}</div>${renderProfileModal()}`;
+    root.innerHTML = `<header class="topbar"><div class="brand"><div class="brand-mark">易</div><div><h1>간지괘운</h1><p>干支卦運 · GANJI HEXAGRAM FORTUNE</p></div></div><div class="privacy">음력 기준 사주 · 60갑자 배괘 · 브라우저 로컬 저장</div></header><div class="layout">${renderSidebar()}${renderMain()}</div>${renderProfileModal()}`;
     document.body.classList.toggle("modal-open", state.formOpen);
     bindEvents();
     if (state.formOpen) document.getElementById("profileName")?.focus();
