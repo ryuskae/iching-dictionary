@@ -158,7 +158,7 @@ button { color: inherit; }
 .modal-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 14px; }
 .modal-actions .primary { margin-top: 0; }
 
-.main { min-width: 0; display: grid; gap: 16px; }
+.main { min-width: 0; display: grid; gap: 16px; container: main / inline-size; }
 .empty-state { padding: clamp(46px, 10vw, 110px) 24px; text-align: center; }
 .empty-state .symbol { color: var(--jade); font-family: var(--serif); font-size: 52px; }
 .empty-state h2 { margin: 12px 0 6px; font-family: var(--serif); }
@@ -187,6 +187,7 @@ button { color: inherit; }
   color: #fff;
 }
 .basis-glyph { width: 78px; }
+.basis-meta { min-width: 0; word-break: keep-all; }
 .basis-meta small { color: rgba(255, 255, 255, .72); letter-spacing: .08em; }
 .basis-ganji { margin-top: 3px; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); }
 .basis-name { font-family: var(--serif); font-size: 18px; }
@@ -230,6 +231,15 @@ button { color: inherit; }
 .toast { position: fixed; left: 50%; bottom: 26px; z-index: 20; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; border-radius: 999px; padding: 10px 16px; background: #202b27; color: #fff; font-size: 12px; transition: .2s ease; }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
+@container main (max-width: 760px) {
+  .period-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 14px; }
+  .basis-card { grid-template-columns: auto minmax(0, 1fr); gap: 12px; min-height: 0; padding: 14px 16px; }
+  .basis-unicode { display: none; }
+  .basis-glyph { width: 52px; }
+  .basis-ganji { font-size: 24px; }
+  .basis-name { font-size: 16px; }
+}
+
 @media (min-width: 821px) and (max-width: 1120px) {
   .hex-card { padding: 9px; }
   .card-pillar { font-size: 9px; }
@@ -248,7 +258,7 @@ button { color: inherit; }
   .topbar { flex: 0 0 auto; }
   .layout { flex: 1 1 auto; min-height: 0; align-items: stretch; }
   .sidebar { align-self: start; }
-  .main { min-height: 0; grid-template-rows: auto auto minmax(0, 1fr); }
+  .main { min-height: 0; grid-template-rows: auto auto minmax(260px, 1fr); overflow-y: auto; }
   .results-panel { display: flex; min-height: 0; flex-direction: column; overflow: hidden; }
   .hex-grid { flex: 1 1 auto; min-height: 0; align-items: stretch; }
   .hex-card { height: 100%; }
